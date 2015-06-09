@@ -1,6 +1,6 @@
 <?php
 
-namespace Config;
+namespace Lib\Config;
 
 use Core\Router\Router;
 

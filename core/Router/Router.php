@@ -2,9 +2,9 @@
 
 namespace Core\Router;
 
+use Controller\MainController;
 use Symfony\Component\HttpFoundation\Request;
-use Core\Exception\Router\RouterException;
-use Symfony\Component\Filesystem\Filesystem;
+use Core\Exception\Router\RouteAddException;
 
 abstract class Router {
 
@@ -31,11 +31,9 @@ abstract class Router {
         $parts              = explode(':',$action);
         $controllerFileName = $parts[0];
         $actionName         = $parts[1]."Action";
+        $projectDir         = str_replace('/web','',$_SERVER['DOCUMENT_ROOT']);
 
-        $targetControllerClass  = __DIR__."../../src/Controller/".$controllerFileName.".php";
-
-
-        return  method_exists($controllerFileName,$actionName);
+       return is_callable($controllerFileName,$actionName) && file_exists($projectDir."/src/Controller/".$controllerFileName.".php");
     }
 
     private static function isValidRouteString($string)
@@ -54,10 +52,10 @@ abstract class Router {
                 ];
                 self::$routes[] = $route;
             }else{
-                throw new RouterException($action,$route);
+                throw new RouteAddException($action,$route);
             }
         }else{
-            throw new RouterException($action,$route);
+            throw new RouteAddException($action,$route);
         }
     }
 
